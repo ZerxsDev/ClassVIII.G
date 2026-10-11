@@ -1,0 +1,94 @@
+/* =====================================================================
+   style.css — ClassVIII.G · White Modern Techno Style
+   ===================================================================== */
+
+:root{
+  --sky:#0ea5e9; --indigo:#6366f1; --slate:#1e293b;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Urbanist',sans-serif;}
+
+/* ---------- Splash dots ---------- */
+.dots{display:flex;gap:10px}
+.dots span{width:14px;height:14px;border-radius:50%;background:var(--sky);animation:bounceDot 1s infinite ease-in-out}
+.dots span:nth-child(2){background:var(--indigo);animation-delay:.15s}
+.dots span:nth-child(3){background:#38bdf8;animation-delay:.3s}
+@keyframes bounceDot{0%,80%,100%{transform:scale(.6);opacity:.5}40%{transform:scale(1.2);opacity:1}}
+
+/* ---------- Tech grid background ---------- */
+.tech-grid{
+  background-image:
+    linear-gradient(rgba(14,165,233,.12) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(14,165,233,.12) 1px,transparent 1px);
+  background-size:34px 34px;
+}
+.float-anim{animation:floatY 3s ease-in-out infinite}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+
+/* ---------- Hover effect untuk SEMUA kotak ---------- */
+.card-hover{transition:transform .28s ease,box-shadow .28s ease,border-color .28s ease}
+.card-hover:hover{transform:translateY(-5px);box-shadow:0 18px 40px -12px rgba(2,132,199,.25);border-color:#bae6fd}
+
+/* ---------- Ketik-hapus (typewriter) ---------- */
+.type-cursor{display:inline-block;color:var(--sky);animation:blink 1s step-end infinite;font-weight:300}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* ---------- Sidebar buttons ---------- */
+.side-btn{width:100%;display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;color:#475569;transition:all .25s;text-align:left}
+.side-btn i{width:20px;text-align:center;color:#94a3b8;transition:color .25s}
+.side-btn:hover{background:#f0f9ff;color:var(--sky)}
+.side-btn:hover i{color:var(--sky)}
+.active-side{background:linear-gradient(135deg,#0ea5e9,#6366f1)!important;color:#fff!important;box-shadow:0 10px 22px -8px rgba(14,165,233,.55)}
+.active-side i{color:#fff!important}
+.sidebar-open{transform:translateX(0)!important}
+.overlay-show{opacity:1!important;pointer-events:auto!important}
+
+/* ---------- Menu panel fade ---------- */
+.menu-panel{animation:fadeUp .45s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* ---------- Scroll horizontal halus ---------- */
+.scroll-x{scrollbar-width:thin;scrollbar-color:#7dd3fc transparent}
+.scroll-x::-webkit-scrollbar{height:8px;width:8px}
+.scroll-x::-webkit-scrollbar-thumb{background:#7dd3fc;border-radius:99px}
+@media (max-width:767px){
+  .scroll-x{flex-wrap:wrap;overflow-x:visible}
+  .scroll-x>*{width:100%!important;flex-shrink:1!important}
+}
+
+/* ---------- Footer ---------- */
+.site-footer{background:#fff;border-top:1px solid #e2e8f0;margin-top:2rem}
+
+/* ---------- QR reader / kamera ---------- */
+.camera-box video{width:100%!important;height:100%!important;object-fit:cover;border-radius:16px}
+#reader img{display:none!important}
+#reader::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:2px;background:linear-gradient(#0ea5e9,transparent);z-index:5;transform:translateX(-50%);animation:scanline 2.2s linear infinite;opacity:.7}
+@keyframes scanline{0%{top:0}50%{top:calc(100% - 4px)}100%{top:0}}
+#reader{position:relative}
+
+/* ---------- Tabel absensi ---------- */
+.absen-table th,.absen-table td{white-space:nowrap}
+.absen-table tbody tr{transition:background .2s}
+.absen-table tbody tr:hover{background:#f0f9ff}
+.hadir-tick{color:#16a34a;font-weight:800}
+.absen-cross{color:#dc2626;font-weight:800}
+
+/* ---------- Chips hadir ---------- */
+.chip-hadir{display:inline-flex;align-items:center;gap:6px;background:#ecfdf5;border:1px solid #a7f3d0;color:#047857;font-size:12px;font-weight:700;border-radius:99px;padding:6px 12px;animation:fadeUp .4s ease}
+
+/* ---------- Tombol mode/tab ---------- */
+.mode-tab{transition:all .25s}
+.radio-pill,.status-pill{transition:all .2s}
+.pill-active{outline:3px solid #0ea5e9;outline-offset:2px}
+
+/* ---------- Visi misi ---------- */
+.vm-box:active{transform:scale(.98)}
+
+/* ---------- Login button glow ---------- */
+.btn-google:not(:disabled):hover{background:linear-gradient(135deg,#f0f9ff,#eef2ff)}
+
+/* Hero content default align mengikuti device diatur Tailwind:
+   mobile = text-left & tombol kiri, md+ = center */
+@media (min-width:768px){
+  .hero-content{text-align:center}
+}
