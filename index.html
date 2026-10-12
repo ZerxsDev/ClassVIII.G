@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ClassVIII.G — Website Kelas VIII.G SMP Negeri 18 Padang</title>
+
+<!-- ===== LIBRARY (Tailwind, Font Awesome, Urbanist, SweetAlert2, html5-qrcode) ===== -->
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body class="font-urbanist bg-slate-50 text-slate-800">
+
+<!-- ============================================================= -->
+<!-- 1) SPLASH LOADING DOTS                                        -->
+<!-- ============================================================= -->
+<div id="splash" class="fixed inset-0 z-[100] bg-white flex flex-col items-center justify-center">
+  <div class="dots"><span></span><span></span><span></span><span></span><span></span></div>
+  <p class="mt-6 tracking-[0.3em] text-sm text-cyan-600 font-semibold">CLASS<span class="text-slate-800">VIII.G</span></p>
+</div>
+
+<!-- ============================================================= -->
+<!-- 2) HALAMAN LOGIN (banner kiri 100vh desktop / atas mobile)    -->
+<!-- ============================================================= -->
+<section id="loginPage" class="hidden min-h-screen flex flex-col md:flex-row">
+  <!-- Banner -->
+  <div class="login-banner relative w-full h-[50vh] md:h-screen md:w-1/2 overflow-hidden bg-gradient-to-br from-cyan-600 via-sky-700 to-blue-900">
+    <div class="grid-overlay absolute inset-0"></div>
+    <div class="relative z-10 h-full flex flex-col justify-center px-8 md:px-14 text-white">
+      <i class="fa-solid fa-graduation-cap text-5xl mb-4 text-cyan-200"></i>
+      <h1 class="text-4xl md:text-5xl font-extrabold leading-tight">Class<span class="text-cyan-300">VIII.G</span></h1>
+      <p class="mt-3 text-cyan-100 max-w-md">Website edukasi resmi kelas VIII.G SMP Negeri 18 Padang — presensi real-time, jadwal piket, album kenangan, dan banyak lagi.</p>
+      <div class="mt-6 flex gap-4 text-cyan-200 text-sm">
+        <span><i class="fa-solid fa-shield-halved mr-1"></i>Aman</span>
+        <span><i class="fa-solid fa-bolt mr-1"></i>Real-time</span>
+        <span><i class="fa-solid fa-qrcode mr-1"></i>QR Presensi</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Kotak form login -->
+  <div class="flex-1 flex items-center justify-center p-6 md:p-10 bg-slate-50">
+    <div class="box-hover w-full max-w-md bg-white rounded-2xl shadow-tech border border-slate-100 p-8">
+      <h2 class="text-2xl font-bold">Masuk ke Akun</h2>
+      <p class="text-sm text-slate-500 mt-1">Gunakan akun Google yang terhubung dengan Google Classroom kelas VIII.G.</p>
+
+      <form id="formLogin" class="mt-6 space-y-4" autocomplete="off">
+        <div>
+          <label for="inpEmail" class="text-xs font-semibold uppercase tracking-wide text-slate-500">Email</label>
+          <div class="relative mt-1">
+            <i class="fa-solid fa-envelope absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <input id="inpEmail" type="email" placeholder="nama@gmail.com"
+              class="w-full pl-10 pr-3 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-100 outline-none transition" />
+          </div>
+        </div>
+        <div>
+          <label for="inpPass" class="text-xs font-semibold uppercase tracking-wide text-slate-500">Password</label>
+          <div class="relative mt-1">
+            <i class="fa-solid fa-lock absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <input id="inpPass" type="password" placeholder="••••••••"
+              class="w-full pl-10 pr-11 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-100 outline-none transition" />
+            <button type="button" id="btnEye" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-cyan-600">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-2 text-sm">
+          <input id="chkPrivasi" type="checkbox" class="mt-1 accent-cyan-600" />
+          <label for="chkPrivasi" class="text-slate-600">Saya telah membaca dan menyetujui
+            <a href="#" id="linkPrivasi" class="text-cyan-600 font-semibold hover:underline">Kebijakan Privasi</a> kami.</label>
+        </div>
+
+        <button id="btnGoogle" type="button" disabled
+          class="btn-google w-full flex items-center justify-center gap-3 py-3 rounded-xl font-semibold bg-white border border-slate-300 text-slate-700 transition disabled:opacity-40 disabled:cursor-not-allowed">
+          <i class="fa-brands fa-google text-lg"></i> Masuk dengan Google
+        </button>
+        <p class="text-[11px] text-center text-slate-400">Akun harus terdaftar di data Firebase — jika belum ditambahkan, login akan gagal.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================= -->
+<!-- 3) APLIKASI UTAMA (setelah login)                             -->
+<!-- ============================================================= -->
+<main id="app" class="hidden">
+
+  <!-- Navbar -->
+  <nav class="fixed top-0 inset-x-0 z-50 bg-white/90 backdrop-blur border-b border-slate-200">
+    <div class="flex items-center justify-between px-4 md:px-8 h-16">
+      <a href="#" class="logo-text text-xl font-extrabold">Class<span class="text-cyan-600">VIII.G</span>
+        <span class="hidden sm:inline text-[11px] font-medium text-slate-400 ml-2">SMPN 18 Padang</span></a>
+      <button id="btnToggle" class="w-11 h-11 rounded-xl bg-slate-100 hover:bg-cyan-50 text-cyan-700 transition box-hover" aria-label="Buka menu">
+        <i class="fa-solid fa-bars-staggered"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Sidebar slide KANAN (active menu) -->
+  <div id="overlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[60] hidden"></div>
+  <aside id="sidebar" class="fixed top-0 right-0 h-full w-72 z-[70] bg-white border-l border-slate-200 shadow-tech translate-x-full transition-transform duration-300 flex flex-col">
+    <div class="flex items-center justify-between p-5 border-b border-slate-100">
+      <span class="font-bold text-slate-700"><i class="fa-solid fa-compass mr-2 text-cyan-600"></i>Menu Navigasi</span>
+      <button id="btnCloseSidebar" class="w-9 h-9 rounded-lg hover:bg-slate-100 text-slate-500"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <nav id="menuList" class="flex-1 overflow-y-auto p-3 space-y-1 text-sm font-semibold">
+      <button data-menu="beranda"    class="menu-btn active"><i class="fa-solid fa-house"></i> Beranda</button>
+      <button data-menu="struktur"   class="menu-btn"><i class="fa-solid fa-sitemap"></i> Struktur Kelas</button>
+      <button data-menu="anggota"    class="menu-btn"><i class="fa-solid fa-users"></i> Anggota Kelas</button>
+      <button data-menu="piket"      class="menu-btn"><i class="fa-solid fa-broom"></i> Jadwal Piket</button>
+      <button data-menu="album"      class="menu-btn"><i class="fa-solid fa-images"></i> Album Kenangan</button>
+      <button data-menu="lagu"       class="menu-btn"><i class="fa-brands fa-spotify"></i> Lagu Favorit</button>
+      <button data-menu="presensi"   class="menu-btn"><i class="fa-solid fa-qrcode"></i> Presensi</button>
+      <button data-menu="dokumen"    class="menu-btn"><i class="fa-solid fa-file-lines"></i> Dokumen</button>
+      <button data-menu="profil"     class="menu-btn"><i class="fa-solid fa-user-gear"></i> Profil</button>
+    </nav>
+    <div class="p-4 border-t border-slate-100 text-xs text-slate-400">© 2026 ClassVIII.G · v1.0</div>
+  </aside>
+
+  <div class="pt-16">
+
+  <!-- ================= MENU: BERANDA ================= -->
+  <section id="page-beranda" class="page">
+    <div class="hero-box box-hover relative mx-3 md:mx-6 my-4 rounded-3xl overflow-hidden bg-gradient-to-br from-white via-cyan-50 to-blue-100 border border-cyan-100 shadow-tech" style="height:100vh">
+      <div class="absolute inset-0 grid-overlay opacity-40 pointer-events-none"></div>
+      <div class="relative h-full flex flex-col items-start md:items-center justify-center text-left md:text-center px-6 md:px-10">
+        <span class="badge-tech mb-4"><i class="fa-solid fa-star mr-1"></i> Selamat Belajar</span>
+        <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">Selamat datang di kelas <span class="text-cyan-600">VIII.G</span></h1>
+        <p class="mt-4 text-lg md:text-2xl font-semibold text-slate-600 min-h-[2rem]">
+          <span id="typewriter"></span><span class="caret">|</span>
+        </p>
+        <p class="mt-4 max-w-xl text-sm md:text-base text-slate-500">
+          Website ini dibangun sendiri oleh siswa kelas VIII.G sebagai pusat informasi kelas:
+          presensi digital berbasis QR, jadwal piket, dokumentasi kenangan, hingga lagu favorit — semuanya real-time.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3 justify-start md:justify-center">
+          <button id="btnSelengkapnya" class="btn-style-a"><i class="fa-solid fa-circle-info mr-2"></i>Lihat Selengkapnya</button>
+          <button id="btnUmpanBalik" class="btn-style-b"><i class="fa-solid fa-comment-dots mr-2"></i>Umpan Balik</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tentang -->
+    <div class="px-3 md:px-6 mt-8">
+      <h2 class="section-title"><i class="fa-solid fa-circle-info text-cyan-600"></i> Tentang</h2>
+      <div class="box-hover mt-3 bg-white rounded-2xl border border-slate-200 shadow-card p-6 md:p-8">
+        <p class="text-slate-600 leading-relaxed text-sm md:text-base">
+          <strong class="text-slate-800">ClassVIII.G</strong> adalah website kelas VIII.G SMP Negeri 18 Padang.
+          Website ini mencatat kehadiran siswa secara <em>real-time database</em>, menampilkan struktur organisasi kelas,
+          daftar anggota beserta kontak, jadwal piket harian, album kenangan, lagu favorit siswa, serta dokumen resmi kelas.
+          Seluruh data presensi tersimpan otomatis pada Google Spreadsheet dan dapat diakses kembali kapan pun.
+        </p>
+      </div>
+
+      <!-- Visi & Misi dipisah -->
+      <div class="grid md:grid-cols-2 gap-4 mt-4">
+        <div id="kotakVisi" class="box-hover vm-card bg-white rounded-2xl border border-slate-200 shadow-card p-6 cursor-pointer">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-cyan-700"><i class="fa-solid fa-eye mr-2"></i>Visi Kelas</h3>
+            <i class="fa-solid fa-chevron-down teks-toggle text-slate-400"></i>
+          </div>
+          <div class="vm-body hidden mt-3 text-sm text-slate-600 leading-relaxed">
+            Menjadi kelas yang unggul dalam prestasi, disiplin, dan solidaritas — menciptakan generasi kreatif,
+            berkarakter, dan melek teknologi di lingkungan SMP Negeri 18 Padang.
+          </div>
+        </div>
+        <div id="kotakMisi" class="box-hover vm-card bg-white rounded-2xl border border-slate-200 shadow-card p-6 cursor-pointer">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-blue-700"><i class="fa-solid fa-rocket mr-2"></i>Misi Kelas</h3>
+            <i class="fa-solid fa-chevron-down teks-toggle text-slate-400"></i>
+          </div>
+          <div class="vm-body hidden mt-3 text-sm text-slate-600 leading-relaxed">
+            <ol class="list-decimal ml-5 space-y-1">
+              <li>Membangun budaya belajar yang aktif dan kolaboratif.</li>
+              <li>Mendisiplinkan kehadiran melalui presensi digital.</li>
+              <li>Menjaga kekompakan dan kebersamaan seluruh anggota kelas.</li>
+              <li>Mengembangkan kreativitas lewat karya seperti website ini.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="site-footer"><i class="fa-solid fa-heart text-cyan-600"></i> ClassVIII.G — Dibuat dengan semangat oleh siswa VIII.G · © 2026</footer>
+  </section>
+
+  <!-- ================= MENU: STRUKTUR KELAS ================= -->
+  <section id="page-struktur" class="page hidden">
+    <div class="px-3 md:px-6 mt-4">
+      <div class="box-hover bg-white rounded-2xl border border-slate-200 shadow-card p-6 md:p-8">
+        <h2 class="text-2xl md:text-3xl font-extrabold">Struktur <span class="text-cyan-600">Kelas</span></h2>
+        <p class="mt-2 text-sm text-slate-500 max-w-2xl">Susunan pengurus kelas VIII.G periode 2026/2027 yang memimpin dan mengoordinasikan kegiatan kelas sehari-hari.</p>
+      </div>
+
+      <div class="mt-5 space-y-4" id="listStruktur">
+        <!-- kartu struktur: foto kiri + info kanan (HTML murni) -->
+        <div class="box-hover org-card bg-white rounded-2xl border border-slate-200 shadow-card p-4 md:p-5 flex items-center gap-4">
+          <img src="https://ui-avatars.com/api/?name=Ketua&background=0891b2&color=fff&size=128&bold=true" alt="foto" class="w-20 h-20 md:w-24 md:h-24 rounded-2xl object-cover border-2 border-cyan-100" />
+          <div>
+            <p class="text-xs uppercase tracking-widest text-cyan-600 font-bold">Ketua Kelas</p>
+            <h3 class="font-bold text-lg">Andi Pratama</h3>
+            <p class="text-sm text-slate-500"><i class="fa-regular fa-calendar mr-1"></i>12 Maret 2011</p>
+          </div>
+        </div>
+        <div class="box-hover org-card bg-white rounded-2xl border border-slate-200 shadow-card p-4 md:p-5 flex items-center gap-4">
+          <img src="https://ui-avatars.com/api/?name=Wakil&background=2563eb&color=fff&size=128&bold=true" alt="foto" class="w-20 h-20 md:w-24 md:h-24 rounded-2xl object-cover border-2 border-blue-100" />
+          <div>
+            <p class="text-xs uppercase tracking-widest text-blue-600 font-bold">Wakil Ketua</p>
+            <h3 class="font-bold text-lg">Bella Safitri</h3>
+            <p class="text-sm text-slate-500"><i class="fa-regular fa-calendar mr-1"></i>5 Agustus 2011</p>
+          </div>
+        </div>
+        <div class="box-hover org-card bg-white rounded-2xl border border-slate-200 shadow-card p-4 md:p-5 flex items-center gap-4">
+          <img src="https://ui-avatars.com/api/?name=Sekretaris&background=0d9488&color=fff&size=128&bold=true" alt="foto" class="w-20 h-20 md:w-24 md:h-24 rounded-2xl object-cover border-2 border-teal-100" />
+          <div>
+            <p class="text-xs uppercase tracking-widest text-teal-600 font-bold">Sekretaris</p>
+            <h3 class="font-bold text-lg">Citra Dewi Anggraini</h3>
+            <p class="text-sm text-slate-500"><i class="fa-regular fa-calendar mr-1"></i>21 Januari 2011</p>
+          </div>
+        </div>
+        <div class="box-hover org-card bg-white rounded-2xl border border-slate-200 shadow-card p-4 md:p-5 flex items-center gap-4">
+          <img src="https://ui-avatars.com/api/?name=Bendahara&background=7c3aed&color=fff&size=128&bold=true" alt="foto" class="w-20 h-20 md:w-24 md:h-24 rounded-2xl object-cover border-2 border-violet-100" />
+          <div>
+            <p class="text-xs uppercase tracking-widest text-violet-600 font-bold">Bendahara</p>
+            <h3 class="font-bold text-lg">Doni Kusuma</h3>
+            <p class="text-sm text-slate-500"><i class="fa-regular fa-calendar mr-1"></i>30 November 2010</p>
+          </div>
+        </div>
+        <div class="box-hover org-card bg-white rounded-2xl border border-slate-200 shadow-card p-4 md:p-5 flex items-center gap-4">
+          <img src="https://ui-avatars.com/api/?name=Seksi&background=db2777&color=fff&size=128&bold=true" alt="foto" class="w-20 h-20 md:w-24 md:h-24 rounded-2xl object-cover border-2 border-pink-100" />
+          <div>
+            <p class="text-xs uppercase tracking-widest text-pink-600 font-bold">Seksi Keamanan</p>
+            <h3 class="font-bold text-lg">Hendra Wijaya</h3>
+            <p class="text-sm text-slate-500"><i class="fa-regular fa-calendar mr-1"></i>17 Juli 2011</p>
+          </div>
+        </div>
+        <div class="box-hover org-card bg-white rounded-2xl border border-slate-200 shadow-card p-4 md:p-5 flex items-center gap-4">
+          <img src="https://ui-avatars.com/api/?name=Rohis&background=ea580c&color=fff&size=128&bold=true" alt="foto" class="w-20 h-20 md:w-24 md:h-24 rounded-2xl object-cover border-2 border-orange-100" />
+          <div>
+            <p class="text-xs uppercase tracking-widest text-orange-600 font-bold">Seksi Kerohanian</p>
+            <h3 class="font-bold text-lg">Umi Kalsum</h3>
+            <p class="text-sm text-slate-500"><i class="fa-regular fa-calendar mr-1"></i>2 Februari 2011</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="site-footer">© 2026 ClassVIII.G · Struktur Kelas VIII.G SMPN 18 Padang</footer>
+  </section>
+
+  <!-- ================= MENU: ANGGOTA KELAS ================= -->
+  <section id="page-anggota" class="page hidden">
+    <div class="px-3 md:px-6 mt-4">
+      <div class="box-hover bg-white rounded-2xl border border-slate-200 shadow-card p-6 md:p-8">
+        <h2 class="text-2xl md:text-3xl font-extrabold">Anggota Kelas <span class="text-cyan-600">VIII.G</span></h2>
+        <p class="mt-2 text-sm text-slate-500">Geser ke samping untuk melihat semua anggota (desktop) — gulir ke bawah di mobile.</p>
+      </div>
+
+      <div class="scroll-x mt-5 flex flex-nowrap md:overflow-x-auto gap-4 pb-3">
+        <!-- kartu info siswa: foto, nama, hobi, tgl lahir, jabatan, tombol chat WA -->
+        <div class="box-hover anggota-card shrink-0 w-64 bg-white rounded-2xl border border-slate-200 shadow-card p-4">
+          <img src="https://ui-avatars.com/api/?name=Andi+P&background=0891b2&color=fff&size=200" class="w-full h-40 object-cover rounded-xl" alt="foto"/>
+          <h3 class="mt-3 font-bold">Andi Pratama</h3>
+          <p class="text-sm text-slate-500"><i class="fa-solid fa-futbol mr-1 text-cyan-600"></i>Hobi: Sepak bola</p>
+          <p class="text-sm text-slate-500"><i class="fa-regular fa-calendar mr-1 text-cyan-600"></i>12 Maret 2011</p>
+          <p class="text-sm text-slate-500"><i class="fa-solid fa-user-tie mr-1 text-cyan-600"></i>Ketua Kelas</p>
+          <a href="https://wa.me/6281234567001?text=Halo%20Andi%20dari%20kelas%20VIII.G" target="_blank" class="btn-wa mt-3"><i class="fa-brands fa-whatsapp"></i> Chat WA</a>
+        </div>
+        <div class="box-hover anggota-card shrink-0 w-64 bg-white rounded-2xl border border-slate-200 shadow-card p-4">
+          <img src="https://ui-avatars.com/api/?name=Bella+S&background=2563eb&color=fff&size=200" class="w-full h-40 object-cover rounded-xl" alt="foto"/>
+          <h3 class="mt-3 font-bold">Bella Safitri</h3>
+          <p class="text-sm text-slate-500"><i class="fa-solid fa-book-open mr-1 text-blue-600"></i>Hobi: Membaca</p>
+          <p class="text-sm text-slate-500"><i class="fa-regular fa-calendar mr-1 text-blue-600"></i>5 Agustus 2011</p>
+          <p class="text-sm text-slate-500"><i class="fa-solid fa-user-tie mr-1 text-blue-600"></i>Wakil Ketua</p>
+          <a href="https://wa.me/6281234567002?text=Halo%20Bella%20dari%20kelas%20VIII.G" target="_blank" class="btn-wa mt-3"><i class="fa-brands fa-whatsapp"></i> Chat WA</a>
+        </div>
+        <div class="box-hover anggota-card shrink-0 w-64 bg-white rounded-2xl border border-slate-200 shadow-card p-4">
+          <img src="https://ui-avatars.com/api/?name=Citra+D&background=0d9488&color=fff&size=200" class="w-full h-40 object-cover rounded-xl" alt="foto"/>
+          <h3 class="mt-3 font-bold">Citra Dewi Anggraini</h3>
+          <p class="text-sm text-slate-500"><i class="fa-solid fa-pen-nib mr-1 text-teal-600"></i>Hobi: Menggambar</p>
+          <p class="text-sm text-slate-500"><i class="fa-regular fa-calendar mr-1 text-teal-600"></i>21 Januari 2011</p>
+          <p class="text-sm text-slate-500"><i class="fa-solid fa-user-tie mr-1 text-teal-600"></i>Sekretaris</p>
+          <a href="https://wa.me/6281234567003?text=Halo%20Citra%20dari%20kelas%20VIII.G" target="_blank" class="btn-wa mt-3"><i class="fa-brands fa-whatsapp"></i> Chat WA</a>
+        </div>
+        <div class="box-hover anggota-card shrink-0 w-64 bg-white rounded-2xl border border-slate-200 shadow-card p-4">
+          <img src="https://ui-avatars.com/api/?name=Doni+K&background=7c3aed&color=fff&size=200" class="w-full h-40 object-cover rounded-xl" alt="foto"/>
+          <h3 class="mt-3 font-bold">Doni Kusuma</h3>
+          <p class="text-sm text-slate-500"><i class="fa-solid fa-calculator mr-1 text-violet-600"></i>Hobi: Matematika</p>
+          <p class="text-sm text-slate-500"><i class="fa-regular fa-calendar mr-1 text-violet-600"></i>30 November 2010</p>
+          <p class="text-sm text-slate-500"><i class="fa-solid fa-user-tie mr-1 text-violet-600"></i>Bendahara</p>
+          <a href="https://wa.me/6281234567004?text=Halo%20Doni%20dari%20kelas%20VIII.G" target="_blank" class="btn-wa mt-3"><i class="fa-brands fa-whatsapp"></i> Chat WA</a>
+        </div>
+        <div class="box-hover anggota-card shrink-0 w-64 bg-white rounded-2xl border border-slate-200 shadow-card p-4">
+          <img src="https://ui-avatars.com/api/?name=Elsa+M&background=db2777&color=fff&size=200" class="w-full h-40 object-cover rounded-xl" alt="foto"/>
+          <h3 class="mt-3 font-bold">Elsa Maharani</h3>
+          <p class="text-sm text-slate-500"><i class="fa-solid fa-music mr-1 text-pink-600"></i>Hobi: Bernyanyi</p>
+          <p class="text-sm text-slate-500"><i class="fa-regular fa-calendar mr-1 text-pink-600"></i>9 September 2011</p>
+          <p class="text-sm text-slate-500"><i class="fa-solid fa-user-tie mr-1 text-pink-600"></i>Anggota</p>
+          <a href="https://wa.me/6281234567005?text=Halo%20Elsa%20dari%20kelas%20VIII.G" target="_blank" class="btn-wa mt-3"><i class="fa-brands fa-whatsapp"></i> Chat WA</a>
+        </div>
+        <div class="box-hover anggota-card shrink-0 w-64 bg-white rounded-2xl border border-slate-200 shadow-card p-4">
+          <img src="https://ui-avatars.com/api/?name=Fajar+N&background=ea580c&color=fff&size=200" class="w-full h-40 object-cover rounded-xl" alt="foto"/>
+          <h3 class="mt-3 font-bold">Fajar Nugroho</h3>
+          <p class="text-sm text-slate-500"><i class="fa-solid fa-gamepad mr-1 text-orange-600"></i>Hobi: Gaming</p>
+          <p class="text-sm text-slate-500"><i class="fa-regular fa-calendar mr-1 text-orange-600"></i>14 Juni 2011</p>
+          <p class="text-sm text-slate-500"><i class="fa-solid fa-user-tie mr-1 text-orange-600"></i>Anggota</p>
+          <a href="https://wa.me/6281234567006?text=Halo%20Fajar%20dari%20kelas%20VIII.G" target="_blank" class="btn-wa mt-3"><i class="fa-brands fa-whatsapp"></i> Chat WA</a>
+        </div>
+        <div class="box-hover anggota-card shrink-0 w-64 bg-white rounded-2xl border border-slate-200 shadow-card p-4">
+          <img src="https://ui-avatars.com/api/?name=Gita+P&background=059669&color=fff&size=200" class="w-full h-40 object-cover rounded-xl" alt="foto"/>
+          <h3 class="mt-3 font-bold">Gita Permata Sari</h3>
+          <p class="text-sm text-slate-500"><i class="fa-solid fa-camera mr-1 text-emerald-600"></i>Hobi: Fotografi</p>
+          <p class="text-sm text-slate-500"><i class="fa-regular fa-calendar mr-1 text-emerald-600"></i>27 April 2011</p>
+          <p class="text-sm text-slate-500"><i class="fa-solid fa-user-tie mr-1 text-emerald-600"></i>Anggota</p>
+          <a href="https://wa.me/6281234567007?text=Halo%20Gita%20dari%20kelas%20VIII.G" target="_blank" class="btn-wa mt-3"><i class="fa-brands fa-whatsapp"></i> Chat WA</a>
+        </div>
+        <div class="box-hover anggota-card shrink-0 w-64 bg-white rounded-2xl border border-slate-200 shadow-card p-4">
+          <img src="https://ui-avatars.com/api/?name=Hendra+W&background=4f46e5&color=fff&size=200" class="w-full h-40 object-cover rounded-xl" alt="foto"/>
+          <h3 class="mt-3 font-bold">Hendra Wijaya</h3>
+          <p class="text-sm text-slate-500"><i class="fa-solid fa-basketball mr-1 text-indigo-600"></i>Hobi: Basket</p>
+          <p class="text-sm text-slate-500"><i class="fa-regular fa-calendar mr-1 text-indigo-600"></i>17 Juli 2011</p>
+          <p class="text-sm text-slate-500"><i class="fa-solid fa-user-tie mr-1 text-indigo-600"></i>Seksi Keamanan</p>
+          <a href="https://wa.me/6281234567008?text=Halo%20Hendra%20dari%20kelas%20VIII.G" target="_blank" class="btn-wa mt-3"><i class="fa-brands fa-whatsapp"></i> Chat WA</a>
+        </div>
+        <div class="box-hover anggota-card shrink-0 w-64 bg-white rounded-2xl border border-slate-200 shadow-card p-4">
+          <img src="https://ui-avatars.com/api/?name=Indah+P&background=be185d&color=fff&size=200" class="w-full h-40 object-cover rounded-xl" alt="foto"/>
+          <h3 class="mt-3 font-bold">Indah Puspita</h3>
+          <p class="text-sm text-slate-500"><i class="fa-solid fa-cake-candles mr-1 text-pink-700"></i>Hobi: Memasak</p>
+          <p class="text-sm text-slate-500"><i class="fa-regular fa-calendar mr-1 text-pink-700"></i>3 Desember 2010</p>
+          <p class="text-sm text-slate-500"><i class="fa-solid fa-user-tie mr-1 text-pink-700"></i>Anggota</p>
+          <a href="https://wa.me/6281234567009?text=Halo%20Indah%20dari%20kelas%20VIII.G" target="_blank" class="btn-wa mt-3"><i class="fa-brands fa-whatsapp"></i> Chat WA</a>
+        </div>
+        <div class="box-hover anggota-card shrink-0 w-64 bg-white rounded-2xl border border-slate-200 shadow-card p-4">
+          <img src="https://ui-avatars.com/api/?name=Joko+S&background=15803d&color=fff&size=200" class="w-full h-40 object-cover rounded-xl" alt="foto"/>
+          <h3 class="mt-3 font-bold">Joko Susilo</h3>
+          <p class="text-sm text-slate-500"><i class="fa-solid fa-table-tennis-paddle-ball mr-1 text-green-700"></i>Hobi: Tenis meja</p>
+          <p class="text-sm text-slate-500"><i class="fa-regular fa-calendar mr-1 text-green-700"></i>8 Oktober 2010</p>
+          <p class="text-sm text-slate-500"><i class="fa-solid fa-user-tie mr-1 text-green-700"></i>Anggota</p>
+          <a href="https://wa.me/6281234567010?text=Halo%20Joko%20dari%20kelas%20VIII.G" target="_blank" class="btn-wa mt-3"><i class="fa-brands fa-whatsapp"></i> Chat WA</a>
+        </div>
+      </div>
+    </div>
+    <footer class="site-footer">© 2026 ClassVIII.G · Anggota Kelas VIII.G</footer>
+  </section>
+
+  <!-- ================= MENU: JADWAL PIKET ================= -->
+  <section id="page-piket" class="page hidden">
+    <div class="px-3 md:px-6 mt-4">
+      <div class="box-hover bg-white rounded-2xl border border-slate-200 shadow-card p-6 md:p-8">
+        <h2 class="text-2xl md:text-3xl font-extrabold">Jadwal <span class="text-cyan-600">Piket</span></h2>
+        <p class="mt-2 text-sm text-slate-500">Pilih hari untuk melihat petugas piket kelas VIII.G.</p>
+      </div>
+
+      <div class="mt-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+        <button data-hari="senin"   class="box-hover hari-btn"><i class="fa-solid fa-broom mb-2"></i>Senin</button>
+        <button data-hari="selasa"  class="box-hover hari-btn"><i class="fa-solid fa-broom mb-2"></i>Selasa</button>
+        <button data-hari="rabu"    class="box-hover hari-btn"><i class="fa-solid fa-broom mb-2"></i>Rabu</button>
+        <button data-hari="kamis"   class="box-hover hari-btn"><i class="fa-solid fa-broom mb-2"></i>Kamis</button>
+        <button data-hari="jumat"   class="box-hover hari-btn"><i class="fa-solid fa-broom mb-2"></i>Jumat</button>
+      </div>
+
+      <div id="detailPiket" class="hidden mt-5 box-hover bg-white rounded-2xl border border-slate-200 shadow-card p-6">
+        <h3 id="judulPiket" class="font-bold text-lg text-cyan-700"></h3>
+        <ul id="isiPiket" class="mt-3 space-y-2 text-sm text-slate-600"></ul>
+      </div>
+      <!-- isi list piket disimpan di HTML tersembunyi (dummy hanya di HTML) -->
+      <div id="dataPiketHtml" class="hidden">
+        <div data-hari="senin"><p>Andi Pratama</p><p>Elsa Maharani</p><p>Joko Susilo</p><p>Ket: sapu &amp; papan tulis</p></div>
+        <div data-hari="selasa"><p>Bella Safitri</p><p>Fajar Nugroho</p><p>Indah Puspita</p><p>Ket: sampah &amp; jendela</p></div>
+        <div data-hari="rabu"><p>Citra Dewi Anggraini</p><p>Gita Permata Sari</p><p>Naufal Abdillah</p><p>Ket: rapikan meja</p></div>
+        <div data-hari="kamis"><p>Doni Kusuma</p><p>Hendra Wijaya</p><p>Maya Sari Putri</p><p>Ket: lab &amp; kursi</p></div>
+        <div data-hari="jumat"><p>Umi Kalsum</p><p>Vino Bastian</p><p>Zahira Aisyah</p><p>Ket: bersih-bersih total</p></div>
+      </div>
+    </div>
+    <footer class="site-footer">© 2026 ClassVIII.G · Jadwal Piket Mingguan</footer>
+  </section>
+
+  <!-- ================= MENU: ALBUM KENANGAN ================= -->
+  <section id="page-album" class="page hidden">
+    <div class="px-3 md:px-6 mt-4">
+      <div class="box-hover bg-white rounded-2xl border border-slate-200 shadow-card p-6 md:p-8">
+        <h2 class="text-2xl md:text-3xl font-extrabold"><i class="fa-solid fa-photo-film text-cyan-600 mr-2"></i>Album</h2>
+        <p class="mt-2 text-sm text-slate-500 max-w-2xl">Kumpulan momen terbaik kelas VIII.G. Setiap foto dilengkapi tanggal dan dapat langsung diunduh sebagai kenangan.</p>
+      </div>
+
+      <div class="scroll-x mt-5 md:overflow-x-auto pb-3">
+        <div class="flex flex-wrap gap-4 md:flex-nowrap">
+          <figure class="box-hover album-card w-[calc(50%-0.5rem)] md:w-[calc(25%-0.75rem)] bg-white rounded-2xl border border-slate-200 shadow-card overflow-hidden">
+            <img src="https://picsum.photos/seed/viiig1/600/400" class="w-full h-40 object-cover" alt="foto kelas"/>
+            <figcaption class="p-3">
+              <p class="text-xs text-slate-400"><i class="fa-regular fa-calendar mr-1"></i>17 Agustus 2026</p>
+              <p class="text-sm font-semibold mt-1">Upacara HUT RI</p>
+              <button class="btn-download mt-2" data-src="https://picsum.photos/seed/viiig1/1200/800" data-name="upacara-hut-ri.jpg"><i class="fa-solid fa-download"></i> Unduh</button>
+            </figcaption>
+          </figure>
+          <figure class="box-hover album-card w-[calc(50%-0.5rem)] md:w-[calc(25%-0.75rem)] bg-white rounded-2xl border border-slate-200 shadow-card overflow-hidden">
+            <img src="https://picsum.photos/seed/viiig2/600/400" class="w-full h-40 object-cover" alt="foto kelas"/>
+            <figcaption class="p-3">
+              <p class="text-xs text-slate-400"><i class="fa-regular fa-calendar mr-1"></i>22 September 2026</p>
+              <p class="text-sm font-semibold mt-1">Study Tour Pantai Air Manis</p>
+              <button class="btn-download mt-2" data-src="https://picsum.photos/seed/viiig2/1200/800" data-name="study-tour.jpg"><i class="fa-solid fa-download"></i> Unduh</button>
+            </figcaption>
+          </figure>
+          <figure class="box-hover album-card w-[calc(50%-0.5rem)] md:w-[calc(25%-0.75rem)] bg-white rounded-2xl border border-slate-200 shadow-card overflow-hidden">
+            <img src="https://picsum.photos/seed/viiig3/600/400" class="w-full h-40 object-cover" alt="foto kelas"/>
+            <figcaption class="p-3">
+              <p class="text-xs text-slate-400"><i class="fa-regular fa-calendar mr-1"></i>5 Oktober 2026</p>
+              <p class="text-sm font-semibold mt-1">Lomba Cerdas Cermat</p>
+              <button class="btn-download mt-2" data-src="https://picsum.photos/seed/viiig3/1200/800" data-name="lcc.jpg"><i class="fa-solid fa-download"></i> Unduh</button>
+            </figcaption>
+          </figure>
+          <figure class="box-hover album-card w-[calc(50%-0.5rem)] md:w-[calc(25%-0.75rem)] bg-white rounded-2xl border border-slate-200 shadow-card overflow-hidden">
+            <img src="https://picsum.photos/seed/viiig4/600/400" class="w-full h-40 object-cover" alt="foto kelas"/>
+            <figcaption class="p-3">
+              <p class="text-xs text-slate-400"><i class="fa-regular fa-calendar mr-1"></i>28 Oktober 2026</p>
+              <p class="text-sm font-semibold mt-1">Peringatan Sumpah Pemuda</p>
+              <button class="btn-download mt-2" data-src="https://picsum.photos/seed/viiig4/1200/800" data-name="sumpah-pemuda.jpg"><i class="fa-solid fa-download"></i> Unduh</button>
+            </figcaption>
+          </figure>
+          <figure class="box-hover album-card w-[calc(50%-0.5rem)] md:w-[calc(25%-0.75rem)] bg-white rounded-2xl border border-slate-200 shadow-card overflow-hidden">
+            <img src="https://picsum.photos/seed/viiig5/600/400" class="w-full h-40 object-cover" alt="foto kelas"/>
+            <figcaption class="p-3">
+              <p class="text-xs text-slate-400"><i class="fa-regular fa-calendar mr-1"></i>11 November 2026</p>
+              <p class="text-sm font-semibold mt-1">Class Meeting Futsal</p>
+              <button class="btn-download mt-2" data-src="https://picsum.photos/seed/viiig5/1200/800" data-name="futsal.jpg"><i class="fa-solid fa-download"></i> Unduh</button>
+            </figcaption>
+          </figure>
+          <figure class="box-hover album-card w-[calc(50%-0.5rem)] md:w-[calc(25%-0.75rem)] bg-white rounded-2xl border border-slate-200 shadow-card overflow-hidden">
+            <img src="https://picsum.photos/seed/viiig6/600/400" class="w-full h-40 object-cover" alt="foto kelas"/>
+            <figcaption class="p-3">
+              <p class="text-xs text-slate-400"><i class="fa-regular fa-calendar mr-1"></i>20 November 2026</p>
+              <p class="text-sm font-semibold mt-1">Hari Guru Nasional</p>
+              <button class="btn-download mt-2" data-src="https://picsum.photos/seed/viiig6/1200/800" data-name="hari-guru.jpg"><i class="fa-solid fa-download"></i> Unduh</button>
+            </figcaption>
+          </figure>
+          <figure class="box-hover album-card w-[calc(50%-0.5rem)] md:w-[calc(25%-0.75rem)] bg-white rounded-2xl border border-slate-200 shadow-card overflow-hidden">
+            <img src="https://picsum.photos/seed/viiig7/600/400" class="w-full h-40 object-cover" alt="foto kelas"/>
+            <figcaption class="p-3">
+              <p class="text-xs text-slate-400"><i class="fa-regular fa-calendar mr-1"></i>1 Desember 2026</p>
+              <p class="text-sm font-semibold mt-1">Outing Kelas Terakhir</p>
+              <button class="btn-download mt-2" data-src="https://picsum.photos/seed/viiig7/1200/800" data-name="outing.jpg"><i class="fa-solid fa-download"></i> Unduh</button>
+            </figcaption>
+          </figure>
+          <figure class="box-hover album-card w-[calc(50%-0.5rem)] md:w-[calc(25%-0.75rem)] bg-white rounded-2xl border border-slate-200 shadow-card overflow-hidden">
+            <img src="https://picsum.photos/seed/viiig8/600/400" class="w-full h-40 object-cover" alt="foto kelas"/>
+            <figcaption class="p-3">
+              <p class="text-xs text-slate-400"><i class="fa-regular fa-calendar mr-1"></i>15 Desember 2026</p>
+              <p class="text-sm font-semibold mt-1">Penampilan Seni Kelas</p>
+              <button class="btn-download mt-2" data-src="https://picsum.photos/seed/viiig8/1200/800" data-name="seni.jpg"><i class="fa-solid fa-download"></i> Unduh</button>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+    <footer class="site-footer">© 2026 ClassVIII.G · Album Kenangan</footer>
+  </section>
+
+  <!-- ================= MENU: LAGU FAVORIT ================= -->
+  <section id="page-lagu" class="page hidden">
+    <div class="px-3 md:px-6 mt-4">
+      <div class="box-hover bg-white rounded-2xl border border-slate-200 shadow-card p-6 md:p-8">
+        <h2 class="text-2xl md:text-3xl font-extrabold"><i class="fa-brands fa-spotify text-green-600 mr-2"></i>Lagu Favorit</h2>
+        <p class="mt-2 text-sm text-slate-500">Playlist pilihan siswa VIII.G — geser untuk menjelajah, klik tombol untuk membuka di Spotify.</p>
+      </div>
+
+      <div class="scroll-x mt-5 md:overflow-x-auto pb-3">
+        <div class="flex flex-wrap gap-4 md:flex-nowrap">
+          <div class="box-hover lagu-card w-[calc(50%-0.5rem)] md:w-60 bg-white rounded-2xl border border-slate-200 shadow-card p-4">
+            <img src="https://picsum.photos/seed/lagu1/300/300" class="w-full aspect-square object-cover rounded-xl" alt="cover"/>
+            <p class="mt-3 text-xs text-slate-400"><i class="fa-solid fa-user mr-1"></i>Andi Pratama</p>
+            <h3 class="font-bold text-sm mt-1">Rolling in the Deep</h3>
+            <p class="text-xs text-slate-500">by Adele</p>
+            <a href="https://open.spotify.com/track/1zHljfxQxV6PFwtLsQ7qOq" target="_blank" class="btn-spotify mt-3"><i class="fa-brands fa-spotify"></i> Buka Spotify</a>
+          </div>
+          <div class="box-hover lagu-card w-[calc(50%-0.5rem)] md:w-60 bg-white rounded-2xl border border-slate-200 shadow-card p-4">
+            <img src="https://picsum.photos/seed/lagu2/300/300" class="w-full aspect-square object-cover rounded-xl" alt="cover"/>
+            <p class="mt-3 text-xs text-slate-400"><i class="fa-solid fa-user mr-1"></i>Bella Safitri</p>
+            <h3 class="font-bold text-sm mt-1">Lathi</h3>
+            <p class="text-xs text-slate-500">by Weird Genius ft. Sara Fajira</p>
+            <a href="https://open.spotify.com/track/4ehbmD1s2evB9Rrk6I7EPd" target="_blank" class="btn-spotify mt-3"><i class="fa-brands fa-spotify"></i> Buka Spotify</a>
+          </div>
+          <div class="box-hover lagu-card w-[calc(50%-0.5rem)] md:w-60 bg-white rounded-2xl border border-slate-200 shadow-card p-4">
+            <img src="https://picsum.photos/seed/lagu3/300/300" class="w-full aspect-square object-cover rounded-xl" alt="cover"/>
+            <p class="mt-3 text-xs text-slate-400"><i class="fa-solid fa-user mr-1"></i>Fajar Nugroho</p>
+            <h3 class="font-bold text-sm mt-1">See You Again</h3>
+            <p class="text-xs text-slate-500">by Wiz Khalifa ft. Charlie Puth</p>
+            <a href="https://open.spotify.com/track/1JfkBZoaGnrXsfVeMAOCuR" target="_blank" class="btn-spotify mt-3"><i class="fa-brands fa-spotify"></i> Buka Spotify</a>
+          </div>
+          <div class="box-hover lagu-card w-[calc(50%-0.5rem)] md:w-60 bg-white rounded-2xl border border-slate-200 shadow-card p-4">
+            <img src="https://picsum.photos/seed/lagu4/300/300" class="w-full aspect-square object-cover rounded-xl" alt="cover"/>
+            <p class="mt-3 text-xs text-slate-400"><i class="fa-solid fa-user mr-1"></i>Elsa Maharani</p>
+            <h3 class="font-bold text-sm mt-1">Selepas Kau Pergi</h3>
+            <p class="text-xs text-slate-500">by La Luna</p>
+            <a href="https://open.spotify.com/search/Sepasas%20Kau%20Pergi" target="_blank" class="btn-spotify mt-3"><i class="fa-brands fa-spotify"></i> Buka Spotify</a>
+          </div>
+          <div class="box-hover lagu-card w-[calc(50%-0.5rem)] md:w-60 bg-white rounded-2xl border border-slate-200 shadow-card p-4">
+            <img src="https://picsum.photos/seed/lagu5/300/300" class="w-full aspect-square object-cover rounded-xl" alt="cover"/>
+            <p class="mt-3 text-xs text-slate-400"><i class="fa-solid fa-user mr-1"></i>Gita Permata Sari</p>
+            <h3 class="font-bold text-sm mt-1">Melompat Lebih Tinggi</h3>
+            <p class="text-xs text-slate-500">by Sheila on 7</p>
+            <a href="https://open.spotify.com/search/Melompat%20Lebih%20Tinggi" target="_blank" class="btn-spotify mt-3"><i class="fa-brands fa-spotify"></i> Buka Spotify</a>
+          </div>
+          <div class="box-hover lagu-card w-[calc(50%-0.5rem)] md:w-60 bg-white rounded-2xl border border-slate-200 shadow-card p-4">
+            <img src="https://picsum.photos/seed/lagu6/300/300" class="w-full aspect-square object-cover rounded-xl" alt="cover"/>
+            <p class="mt-3 text-xs text-slate-400"><i class="fa-solid fa-user mr-1"></i>Naufal Abdillah</p>
+            <h3 class="font-bold text-sm mt-1">INDUSTRI</h3>
+            <p class="text-xs text-slate-500">by Ikonik Project</p>
+            <a href="https://open.spotify.com/search/industri%20ikonik" target="_blank" class="btn-spotify mt-3"><i class="fa-brands fa-spotify"></i> Buka Spotify</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="site-footer">© 2026 ClassVIII.G · Lagu Favorit Siswa</footer>
+  </section>
+
+  <!-- ================= MENU: PRESENSI ================= -->
+  <section id="page-presensi" class="page hidden">
+    <div class="px-3 md:px-6 mt-4">
+      <div class="box-hover bg-white rounded-2xl border border-slate-200 shadow-card p-6 md:p-8">
+        <h2 class="text-2xl md:text-3xl font-extrabold"><i class="fa-solid fa-clipboard-check text-cyan-600 mr-2"></i>Absensi Siswa</h2>
+        <p class="mt-2 text-sm text-slate-500 max-w-2xl">Presensi <b>Scan QR</b> hanya aktif pukul <b>07.30–08.00</b>, khusus operator terdaftar, dan wajib berada di lokasi <b>SMP Negeri 18 Padang</b>. Lewat jam 08.00 gunakan mode <b>Manual</b> (Terlambat/Sakit/Izin).</p>
+      </div>
+
+      <!-- Tombol mode scan/manual -->
+      <div class="mt-5 box-hover bg-white rounded-2xl border border-slate-200 shadow-card p-3 flex gap-2">
+        <button id="tabScan" class="mode-tab active"><i class="fa-solid fa-video mr-1"></i> Scan QR</button>
+        <button id="tabManual" class="mode-tab"><i class="fa-solid fa-keyboard mr-1"></i> Manual</button>
+      </div>
+
+      <!-- KOTAK SCAN (kamera besar) -->
+      <div id="panelScan" class="mt-4 box-hover bg-white rounded-2xl border border-slate-200 shadow-card p-4 md:p-6">
+        <div class="relative w-full max-w-2xl mx-auto rounded-2xl overflow-hidden bg-slate-900" style="min-height:380px">
+          <div id="qr-reader" class="w-full h-[380px]"></div>
+          <div class="scanline" id="scanline"></div>
+          <div id="camOff" class="absolute inset-0 flex flex-col items-center justify-center text-slate-300 gap-3">
+            <i class="fa-solid fa-camera text-4xl"></i>
+            <p class="text-sm">Kamera belum aktif</p>
+            <button id="btnStartCam" class="btn-style-a mt-2"><i class="fa-solid fa-play mr-1"></i> Nyalakan Kamera</button>
+          </div>
+        </div>
+        <p id="infoScan" class="text-center text-xs text-slate-500 mt-3"><i class="fa-solid fa-clock mr-1 text-cyan-600"></i>Jam saat ini: <span id="jamNow">--:--:--</span> · Area scan: <span id="areaStatus">menunggu…</span></p>
+      </div>
+
+      <!-- KOTAK MANUAL -->
+      <div id="panelManual" class="hidden mt-4 box-hover bg-white rounded-2xl border border-slate-200 shadow-card p-4 md:p-6">
+        <h3 class="font-bold text-slate-700 mb-3"><i class="fa-solid fa-pen-to-square mr-1 text-cyan-600"></i>Presensi Manual</h3>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div>
+            <label class="text-xs font-semibold uppercase text-slate-500">Nama Siswa (dari data.js)</label>
+            <select id="manualNama" class="input-tech mt-1"></select>
+          </div>
+          <div>
+            <label class="text-xs font-semibold uppercase text-slate-500">Kode QR</label>
+            <input id="manualKode" class="input-tech mt-1" placeholder="contoh: VIII.G-01" />
+          </div>
+        </div>
+        <div class="mt-4 flex flex-wrap gap-2">
+          <button id="btnHadir" class="btn-hadir"><i class="fa-solid fa-check mr-1"></i> Hadir</button>
+          <button id="btnTidak" class="btn-tidak"><i class="fa-solid fa-xmark mr-1"></i> Tidak Hadir</button>
+        </div>
+        <div id="boxAlasan" class="hidden mt-4">
+          <label class="text-xs font-semibold uppercase text-slate-500">Status</label>
+          <select id="manualStatus" class="input-tech mt-1">
+            <option>Sakit</option><option>Izin</option><option>Terlambat</option>
+          </select>
+          <label class="text-xs font-semibold uppercase text-slate-500 mt-3 block">Alasan (surat)</label>
+          <textarea id="manualAlasan" rows="3" class="input-tech mt-1" placeholder="Tulis alasan tidak hadir…"></textarea>
+          <button id="btnKirimSurat" class="btn-style-a mt-3"><i class="fa-solid fa-paper-plane mr-1"></i> Kirim Surat</button>
+        </div>
+      </div>
+
+      <!-- TABEL ABSENSI -->
+      <div class="mt-5 box-hover bg-white rounded-2xl border border-slate-200 shadow-card p-4 md:p-6 overflow-x-auto">
+        <h3 class="font-bold text-slate-700 mb-1"><i class="fa-solid fa-table-list mr-1 text-cyan-600"></i>Rekap Absensi Minggu Ini</h3>
+        <p id="kosongScan" class="text-sm text-slate-400 italic mb-2">Belum ada yang presensi hari ini.</p>
+        <table class="w-full text-sm" id="tabelAbsensi">
+          <thead>
+            <tr class="text-left border-b-2 border-cyan-100">
+              <th class="py-2 pr-3">Nama Siswa</th>
+              <th class="py-2 text-center">Senin</th><th class="py-2 text-center">Selasa</th>
+              <th class="py-2 text-center">Rabu</th><th class="py-2 text-center">Kamis</th><th class="py-2 text-center">Jumat</th>
+            </tr>
+          </thead>
+          <tbody id="isiTabelAbsensi"><!-- baris diisi dari data.js (teks saja) --></tbody>
+        </table>
+      </div>
+
+      <!-- KOTAK LANGGAR -->
+      <div class="mt-5 box-hover bg-white rounded-2xl border border-slate-200 shadow-card p-4 md:p-6 overflow-x-auto">
+        <h3 class="font-bold text-red-600 mb-2"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Kotak Langgar (Absen / Tidak Hadir)</h3>
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left border-b-2 border-red-100">
+              <th class="py-2 pr-3">Nama</th>
+              <th class="py-2 text-center">Senin</th><th class="py-2 text-center">Selasa</th>
+              <th class="py-2 text-center">Rabu</th><th class="py-2 text-center">Kamis</th><th class="py-2 text-center">Jumat</th>
+              <th class="py-2 text-center">Total Absen</th><th class="py-2 text-center">Libur</th>
+            </tr>
+          </thead>
+          <tbody id="isiLanggar"><!-- diisi script dari spreadsheet --></tbody>
+        </table>
+      </div>
+    </div>
+    <footer class="site-footer">© 2026 ClassVIII.G · Sistem Presensi Real-Time</footer>
+  </section>
+
+  <!-- ================= MENU: DOKUMEN ================= -->
+  <section id="page-dokumen" class="page hidden">
+    <div class="px-3 md:px-6 mt-4">
+      <div class="box-hover bg-white rounded-2xl border border-slate-200 shadow-card p-6 md:p-8">
+        <h2 class="text-2xl md:text-3xl font-extrabold"><i class="fa-solid fa-folder-open text-cyan-600 mr-2"></i>Dokumen</h2>
+        <p class="mt-2 text-sm text-slate-500">Informasi pembuatan website ClassVIII.G.</p>
+      </div>
+      <div class="mt-4 grid md:grid-cols-2 gap-4">
+        <div class="box-hover bg-white rounded-2xl border border-slate-200 shadow-card p-6">
+          <h3 class="font-bold text-lg mb-2"><i class="fa-solid fa-laptop-code text-cyan-600 mr-2"></i>Tentang Website</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">Website <b>ClassVIII.G</b> dibangun menggunakan HTML, Tailwind CSS, JavaScript ES Module, Firebase v10 (Auth Google + Firestore realtime), Google Apps Script sebagai backend Spreadsheet, Font Awesome, SweetAlert2, html5-qrcode, dengan font Urbanist. Bertipe education — memuat informasi kelas dan sistem presensi digital.</p>
+        </div>
+        <div class="box-hover bg-white rounded-2xl border border-slate-200 shadow-card p-6">
+          <h3 class="font-bold text-lg mb-2"><i class="fa-solid fa-id-badge text-cyan-600 mr-2"></i>Info Pembuat</h3>
+          <ul class="text-sm text-slate-600 space-y-1">
+            <li><b>Nama:</b> Tim Pengembang VIII.G</li>
+            <li><b>Kelas:</b> VIII.G — SMP Negeri 18 Padang</li>
+            <li><b>Peran:</b> Perancang &amp; Programmer Utama</li>
+            <li><b>Kontak:</b> <a class="text-cyan-600 hover:underline" href="mailto:viiig.dev@gmail.com">viiig.dev@gmail.com</a></li>
+            <li><b>Tahun:</b> 2026</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <footer class="site-footer">© 2026 ClassVIII.G · Dokumen &amp; Kredensial</footer>
+  </section>
+
+  <!-- ================= MENU: PROFIL ================= -->
+  <section id="page-profil" class="page hidden">
+    <div class="px-3 md:px-6 mt-4 max-w-2xl mx-auto">
+      <div class="box-hover bg-white rounded-2xl border border-slate-200 shadow-card p-6 md:p-8 text-center">
+        <div id="pfAvatar" class="avatar-letter mx-auto">?</div>
+        <h2 id="pfNama" class="mt-4 text-xl font-bold">—</h2>
+        <p id="pfEmail" class="text-sm text-slate-500">—</p>
+        <span id="pfStatus" class="badge-tech mt-3 inline-block">Status: memuat…</span>
+        <div class="mt-6 text-left space-y-3">
+          <div class="profil-row"><i class="fa-solid fa-user text-cyan-600"></i><div><p class="text-xs text-slate-400 uppercase font-semibold">Nama Akun</p><p id="pfNamaAkun" class="font-semibold">—</p></div></div>
+          <div class="profil-row"><i class="fa-solid fa-envelope text-cyan-600"></i><div><p class="text-xs text-slate-400 uppercase font-semibold">Email</p><p id="pfEmailDetail" class="font-semibold">—</p></div></div>
+          <div class="profil-row"><i class="fa-solid fa-phone text-cyan-600"></i><div><p class="text-xs text-slate-400 uppercase font-semibold">Nomor Telepon</p><p id="pfHp" class="font-semibold">—</p></div></div>
+          <div class="profil-row"><i class="fa-regular fa-calendar text-cyan-600"></i><div><p class="text-xs text-slate-400 uppercase font-semibold">Tanggal Lahir</p><p id="pfTgl" class="font-semibold">—</p></div></div>
+        </div>
+        <button id="btnGantiAkun" class="btn-danger mt-6 w-full"><i class="fa-solid fa-right-from-bracket mr-1"></i> Ganti Akun (Keluar)</button>
+      </div>
+    </div>
+    <footer class="site-footer">© 2026 ClassVIII.G · Profil Pengguna</footer>
+  </section>
+
+  </div><!-- /pt-16 -->
+</main>
+
+<!-- Data & logika -->
+<script src="data.js"></script>
+<script type="module" src="script.js"></script>
+</body>
+</html>

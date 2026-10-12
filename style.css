@@ -1,0 +1,125 @@
+/* =====================================================================
+   style.css — White Modern Techno Style · ClassVIII.G
+   Font utama: Urbanist. Semua kotak memakai efek hover.
+   ===================================================================== */
+
+:root{
+  --cyan:#0891b2; --blue:#2563eb; --slate:#334155;
+}
+*{font-family:'Urbanist',sans-serif;}
+html{scroll-behavior:smooth;}
+body{background:#f6f8fb;}
+
+/* ---------- SPLASH DOTS ---------- */
+.dots{display:flex;gap:10px;}
+.dots span{width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,#06b6d4,#2563eb);animation:bounceDot 1s infinite ease-in-out;}
+.dots span:nth-child(2){animation-delay:.15s}.dots span:nth-child(3){animation-delay:.3s}
+.dots span:nth-child(4){animation-delay:.45s}.dots span:nth-child(5){animation-delay:.6s}
+@keyframes bounceDot{0%,80%,100%{transform:scale(.5);opacity:.4}40%{transform:scale(1.25);opacity:1}}
+#splash.hide{opacity:0;pointer-events:none;transition:opacity .6s;}
+
+/* ---------- EFEK HOVER SEMUA KOTAK ---------- */
+.box-hover{transition:transform .28s ease, box-shadow .28s ease, border-color .28s ease;}
+.box-hover:hover{transform:translateY(-4px) scale(1.008);border-color:#a5f3fc !important;
+  box-shadow:0 14px 34px -10px rgba(8,145,178,.25);}
+
+.shadow-tech{box-shadow:0 10px 30px -12px rgba(2,132,199,.25);}
+.shadow-card{box-shadow:0 4px 16px -6px rgba(15,23,42,.10);}
+
+/* grid techno overlay */
+.grid-overlay{background-image:linear-gradient(rgba(255,255,255,.08) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(255,255,255,.08) 1px,transparent 1px);background-size:34px 34px;}
+
+/* login banner animasi glow */
+.login-banner::after{content:"";position:absolute;width:340px;height:340px;border-radius:50%;
+  background:radial-gradient(circle,rgba(103,232,249,.35),transparent 70%);top:-60px;right:-60px;animation:pulseGlow 4s infinite alternate;}
+@keyframes pulseGlow{from{transform:scale(1)}to{transform:scale(1.35)}}
+
+.btn-google:not(:disabled):hover{border-color:var(--cyan);box-shadow:0 6px 18px -6px rgba(8,145,178,.4);transform:translateY(-2px);}
+
+/* ---------- NAVBAR / LOGO ---------- */
+.logo-text{letter-spacing:.5px;}
+
+/* ---------- SIDEBAR MENU AKTIF ---------- */
+.menu-btn{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border-radius:12px;
+  color:#475569;transition:.25s;text-align:left;}
+.menu-btn:hover{background:#ecfeff;color:var(--cyan);}
+.menu-btn.active{background:linear-gradient(135deg,#0891b2,#2563eb);color:#fff;box-shadow:0 8px 20px -8px rgba(8,145,178,.5);}
+
+/* ---------- HERO BERANDA ---------- */
+.hero-box::before{content:"";position:absolute;inset:auto -80px -80px auto;width:260px;height:260px;border-radius:50%;
+  background:radial-gradient(circle,rgba(8,145,178,.15),transparent 70%);}
+.caret{animation:blink 1s steps(1) infinite;color:var(--cyan);font-weight:300;}
+@keyframes blink{50%{opacity:0}}
+.badge-tech{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  padding:6px 14px;border-radius:999px;background:#ecfeff;color:#0e7490;border:1px solid #a5f3fc;}
+
+/* tombol dengan STYLE BERBEDA-BEDA */
+.btn-style-a{padding:12px 22px;border-radius:12px;font-weight:700;color:#fff;
+  background:linear-gradient(135deg,#0891b2,#2563eb);box-shadow:0 8px 20px -8px rgba(37,99,235,.55);transition:.25s;}
+.btn-style-a:hover{transform:translateY(-3px);filter:brightness(1.08);}
+.btn-style-b{padding:12px 22px;border-radius:999px;font-weight:700;color:#0e7490;background:#fff;
+  border:2px dashed #67e8f9;transition:.25s;}
+.btn-style-b:hover{background:#ecfeff;transform:translateY(-3px);}
+.btn-danger{padding:12px 20px;border-radius:12px;font-weight:700;color:#fff;background:#dc2626;transition:.25s;}
+.btn-danger:hover{background:#b91c1c;transform:translateY(-2px);}
+.btn-wa{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:10px;font-weight:700;
+  font-size:13px;color:#fff;background:#25D366;transition:.25s;}
+.btn-wa:hover{background:#1db954;transform:translateY(-2px);}
+.btn-spotify{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;font-weight:700;
+  font-size:13px;color:#15803d;background:#f0fdf4;border:1px solid #bbf7d0;transition:.25s;}
+.btn-spotify:hover{background:#16a34a;color:#fff;}
+.btn-download{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;font-size:12px;
+  font-weight:700;color:#0e7490;background:#cffafe;transition:.25s;}
+.btn-download:hover{background:#0891b2;color:#fff;}
+.btn-hadir{padding:10px 18px;border-radius:10px;font-weight:700;color:#fff;background:#16a34a;transition:.25s;}
+.btn-hadir:hover{filter:brightness(1.1);transform:translateY(-2px);}
+.btn-tidak{padding:10px 18px;border-radius:10px;font-weight:700;color:#fff;background:#ef4444;transition:.25s;}
+.btn-tidak:hover{filter:brightness(1.1);transform:translateY(-2px);}
+
+.section-title{font-size:1.4rem;font-weight:800;}
+
+/* ---------- SCROLL X (anggota/album/lagu) ---------- */
+.scroll-x::-webkit-scrollbar{height:8px;}
+.scroll-x::-webkit-scrollbar-thumb{background:#bae6fd;border-radius:8px;}
+@media (max-width:767px){
+  /* mobile: wrap ke bawah, scroll vertikal normal */
+  #page-anggota .scroll-x > .flex{flex-wrap:wrap;}
+  #page-anggota .anggota-card{width:calc(50% - .5rem);}
+  #page-album .flex,#page-lagu .flex{flex-wrap:wrap;}
+}
+
+/* ---------- PIKET ---------- */
+.hari-btn{padding:16px;border-radius:16px;background:#fff;border:1px solid #e2e8f0;font-weight:700;
+  display:flex;flex-direction:column;align-items:center;color:#475569;box-shadow:0 4px 14px -8px rgba(15,23,42,.15);}
+.hari-btn.active{background:linear-gradient(135deg,#0891b2,#2563eb);color:#fff;border-color:transparent;}
+
+/* ---------- PRESENSI ---------- */
+.mode-tab{flex:1;padding:12px;border-radius:12px;font-weight:700;color:#64748b;background:#f1f5f9;transition:.25s;}
+.mode-tab.active{background:linear-gradient(135deg,#0891b2,#2563eb);color:#fff;}
+.input-tech{width:100%;padding:11px 14px;border-radius:12px;border:1px solid #e2e8f0;background:#f8fafc;outline:none;transition:.2s;}
+.input-tech:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(8,145,178,.15);}
+
+.scanline{position:absolute;left:8%;right:8%;top:0;height:3px;border-radius:3px;
+  background:linear-gradient(90deg,transparent,#22d3ee,transparent);box-shadow:0 0 14px #22d3ee;
+  animation:sweep 2.4s linear infinite;display:none;z-index:5;}
+.scanline.on{display:block;}
+@keyframes sweep{0%{top:6%}50%{top:92%}100%{top:6%}}
+
+.hadir-t{color:#16a34a;font-weight:800;}
+.tidak-t{color:#dc2626;font-weight:800;}
+
+/* ---------- PROFIL ---------- */
+.avatar-letter{width:96px;height:96px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:42px;font-weight:800;color:#fff;background:linear-gradient(135deg,#0891b2,#2563eb);
+  box-shadow:0 10px 24px -8px rgba(8,145,178,.5);}
+.profil-row{display:flex;gap:14px;align-items:center;background:#f8fafc;border:1px solid #eef2f7;
+  padding:12px 16px;border-radius:14px;transition:.25s;}
+.profil-row:hover{border-color:#a5f3fc;background:#ecfeff;}
+
+/* ---------- FOOTER ---------- */
+.site-footer{margin-top:2.5rem;padding:22px 16px;text-align:center;font-size:13px;color:#64748b;
+  background:#fff;border-top:1px solid #e2e8f0;}
+
+/* halaman tampil penuh */
+.page{min-height:calc(100vh - 4rem);}
